@@ -1,0 +1,459 @@
+tried approaches
+=================
+SimpleCV:149> i=Image("0_11_centercenter.jpeg")
+
+SimpleCV:150> dist=i.colorDistance(SimpleCV.Color.WHITE)
+
+SimpleCV:151> dist.save(d)
+SimpleCV:151: 1
+
+SimpleCV:152> distbinarized240=dist.binarize(240)
+
+SimpleCV:153> distbinarized240.save(d)
+SimpleCV:153: 1
+
+SimpleCV:154> distbinarized240morphOpen=distbinarized240.morphOpen()
+
+SimpleCV:155> distbinarized240morphOpen.save(d)
+SimpleCV:155: 1
+
+SimpleCV:156> distbinarized240morphOpenmorphClose=distbinarized240.morphOpen().morphClose()
+
+SimpleCV:157> distbinarized240morphOpenmorphClose.save(d)
+SimpleCV:157: 1
+
+############ below doesn't work
+SimpleCV:158> distbinarized240morphOpenmorphClose.findBlobs()
+
+SimpleCV:159> distbinarized240morphOpenmorphClose.findBlobs(0)
+
+SimpleCV:160> distbinarized240morphOpenmorphClose.findBlobs(1)
+
+SimpleCV:161> distbinarized240morphOpenmorphClose.findBlobs(255)
+###########
+
+SimpleCV:162> bm.extractFromBinary(distbinarized240morphOpenmorphClose,i)
+SimpleCV:162: [SimpleCV.Features.Blob.Blob object at (12, 7) with area 264]
+SimpleCV:199> bm.extractFromBinary(distbinarized240morphOpenmorphClose.invert(),i)
+SimpleCV:199: [SimpleCV.Features.Blob.Blob object at (9, 6) with area 8]	#######WORKS!!!!!!!!!!!!!!!!	centercenter, Default threshold = 230
+
+"""
+This is how I saved images for presentation
+"""
+ i=Image("36_11_topleft.jpeg").colorDistance(SimpleCV.Color.WHITE).binarize(230).morphOpen().morphClose().invert()
+
+SimpleCV:345> i.save(d)
+SimpleCV:345: 1
+
+SimpleCV:346> Image("36_11_topleft.jpeg").save("1_topleft.png")SimpleCV:346: 1
+
+SimpleCV:347> t=i
+
+SimpleCV:348> bm.extractFromBinary(i,t)SimpleCV:348: [SimpleCV.Features.Blob.Blob object at (10, 5) with area 6]
+
+SimpleCV:349> i.invert().save("5_topleft.png")
+SimpleCV:349: 1
+
+
+Approach 2
+===========
+t=dist
+bs=bm.extract(t,230)
+
+SimpleCV:195> bs
+SimpleCV:195: [SimpleCV.Features.Blob.Blob object at (8, 6) with area 10]
+SimpleCV:196> bs[0].draw()
+SimpleCV:197> t.save(d)
+SimpleCV:193> t.clearLayers()
+
+Aprroach to consider
+====================
+save in png instead of jpeg
+
+
+
+
+RESULTS
+========
+
+SVM (plain vanilla) for 80%: 
+Correct: 39.4088669951
+Incorrect: 60.5911330049
+[[62.0, 24.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0], [7.0, 68.0, 1.0, 0.0, 16.0, 0.0, 2.0, 0.0, 0.0], [25.0, 13.0, 39.0, 0.0, 13.0, 0.0, 0.0, 0.0, 0.0], [14.0, 42.0, 1.0, 1.0, 4.0, 0.0, 25.0, 0.0, 0.0], [1.0, 31.0, 0.0, 0.0, 44.0, 0.0, 15.0, 3.0, 0.0], [14.0, 18.0, 8.0, 0.0, 46.0, 1.0, 0.0, 0.0, 0.0], [0.0, 6.0, 2.0, 0.0, 3.0, 0.0, 71.0, 9.0, 0.0], [0.0, 0.0, 7.0, 0.0, 3.0, 0.0, 48.0, 33.0, 0.0], [0.0, 3.0, 11.0, 0.0, 19.0, 0.0, 35.0, 21.0, 1.0]]
+SAME RESULT FOR no invert, so stop worrying about it!
+
+SVM (plain vanilla) for 100%:
+Correct: 38.3616383616
+Incorrect: 61.6383616384
+[[75.0, 30.0, 0.0, 2.0, 1.0, 0.0, 1.0, 0.0, 0.0], [9.0, 80.0, 0.0, 0.0, 22.0, 1.0, 3.0, 1.0, 0.0], [29.0, 15.0, 52.0, 0.0, 15.0, 0.0, 0.0, 0.0, 0.0], [17.0, 47.0, 1.0, 1.0, 6.0, 0.0, 26.0, 9.0, 0.0], [1.0, 40.0, 0.0, 0.0, 51.0, 1.0, 14.0, 9.0, 0.0], [16.0, 23.0, 8.0, 0.0, 58.0, 1.0, 1.0, 0.0, 0.0], [0.0, 7.0, 2.0, 0.0, 3.0, 0.0, 88.0, 12.0, 0.0], [0.0, 0.0, 9.0, 0.0, 4.0, 0.0, 64.0, 35.0, 0.0], [0.0, 3.0, 12.0, 0.0, 21.0, 1.0, 47.0, 26.0, 1.0]]
+
+SVM (poly with coef 5) for 100% "img_svm_100p_poly5.pkl":
+Correct: 48.2517482517
+Incorrect: 51.7482517483
+[[77.0, 5.0, 0.0, 24.0, 0.0, 2.0, 1.0, 0.0, 0.0], [9.0, 76.0, 0.0, 0.0, 24.0, 3.0, 0.0, 4.0, 0.0], [27.0, 4.0, 53.0, 1.0, 9.0, 17.0, 0.0, 0.0, 0.0], [18.0, 8.0, 0.0, 38.0, 3.0, 5.0, 14.0, 21.0, 0.0], [1.0, 38.0, 0.0, 0.0, 47.0, 7.0, 3.0, 20.0, 0.0], [16.0, 4.0, 8.0, 7.0, 34.0, 37.0, 1.0, 0.0, 0.0], [1.0, 1.0, 0.0, 8.0, 0.0, 1.0, 72.0, 28.0, 1.0], [0.0, 0.0, 0.0, 0.0, 3.0, 1.0, 30.0, 71.0, 7.0], [0.0, 1.0, 1.0, 2.0, 17.0, 5.0, 15.0, 58.0, 12.0]]
+
+SVM (poly with coef 9) for 100% "img_svm_100p_poly9.pkl":
+Correct: 51.9480519481
+Incorrect: 48.0519480519
+[[86.0, 5.0, 0.0, 15.0, 0.0, 2.0, 1.0, 0.0, 0.0], [9.0, 76.0, 0.0, 0.0, 23.0, 4.0, 0.0, 4.0, 0.0], [24.0, 0.0, 56.0, 0.0, 4.0, 27.0, 0.0, 0.0, 0.0], [17.0, 10.0, 0.0, 39.0, 2.0, 4.0, 10.0, 25.0, 0.0], [1.0, 38.0, 0.0, 0.0, 47.0, 7.0, 3.0, 20.0, 0.0], [15.0, 1.0, 8.0, 6.0, 20.0, 56.0, 1.0, 0.0, 0.0], [0.0, 1.0, 0.0, 9.0, 0.0, 0.0, 68.0, 32.0, 2.0], [0.0, 0.0, 0.0, 0.0, 3.0, 1.0, 23.0, 81.0, 4.0], [0.0, 0.0, 1.0, 2.0, 15.0, 8.0, 9.0, 65.0, 11.0]]
+
+SVM (poly with coef 9) for 100% "img_svm_80p_poly9.pkl":
+Correct: 51.354679803
+Incorrect: 48.645320197
+[[71.0, 3.0, 0.0, 12.0, 0.0, 1.0, 1.0, 0.0, 0.0], [7.0, 65.0, 0.0, 0.0, 18.0, 2.0, 0.0, 2.0, 0.0], [21.0, 1.0, 43.0, 0.0, 3.0, 22.0, 0.0, 0.0, 0.0], [14.0, 8.0, 0.0, 35.0, 2.0, 3.0, 7.0, 18.0, 0.0], [1.0, 28.0, 0.0, 0.0, 42.0, 5.0, 3.0, 15.0, 0.0], [13.0, 1.0, 7.0, 8.0, 25.0, 33.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 9.0, 0.0, 0.0, 60.0, 20.0, 2.0], [0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 25.0, 56.0, 7.0], [0.0, 0.0, 0.0, 2.0, 14.0, 6.0, 12.0, 44.0, 12.0]]
+
+SVM (poly with coef 9) for 100% "img_svm_80p_poly18.pkl":
+Correct: 55.6650246305
+Incorrect: 44.3349753695
+[[75.0, 2.0, 0.0, 8.0, 0.0, 2.0, 1.0, 0.0, 0.0], [7.0, 66.0, 0.0, 0.0, 18.0, 1.0, 0.0, 2.0, 0.0], [19.0, 0.0, 45.0, 0.0, 2.0, 24.0, 0.0, 0.0, 0.0], [12.0, 8.0, 0.0, 40.0, 2.0, 0.0, 6.0, 19.0, 0.0], [1.0, 28.0, 0.0, 0.0, 46.0, 1.0, 2.0, 16.0, 0.0], [8.0, 0.0, 7.0, 10.0, 13.0, 49.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 9.0, 0.0, 0.0, 56.0, 24.0, 2.0], [0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 19.0, 63.0, 6.0], [0.0, 0.0, 0.0, 4.0, 12.0, 6.0, 10.0, 46.0, 12.0]]
+
+SVM (poly with coef 9) for 100% "img_svm_80p_poly36.pkl":
+Correct: 58.3743842365
+Incorrect: 41.6256157635
+[[76.0, 0.0, 1.0, 9.0, 0.0, 1.0, 1.0, 0.0, 0.0], [7.0, 67.0, 0.0, 0.0, 16.0, 2.0, 0.0, 2.0, 0.0], [17.0, 0.0, 46.0, 0.0, 1.0, 26.0, 0.0, 0.0, 0.0], [11.0, 7.0, 0.0, 42.0, 2.0, 0.0, 5.0, 19.0, 1.0], [0.0, 27.0, 0.0, 1.0, 44.0, 3.0, 2.0, 16.0, 1.0], [7.0, 1.0, 8.0, 8.0, 3.0, 60.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 58.0, 26.0, 1.0], [0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 18.0, 67.0, 3.0], [0.0, 1.0, 0.0, 2.0, 7.0, 9.0, 9.0, 48.0, 14.0]]
+
+SVM (poly with degree 3 and 9) : 39 vs. 40%
+
+img_svm_80p_poly_degree5_coef36.pkl: 
+Correct: 64.1625615764
+Incorrect: 35.8374384236
+[[73.0, 0.0, 4.0, 8.0, 0.0, 2.0, 1.0, 0.0, 0.0], [6.0, 72.0, 1.0, 0.0, 11.0, 0.0, 0.0, 2.0, 2.0], [6.0, 0.0, 61.0, 0.0, 0.0, 23.0, 0.0, 0.0, 0.0], [11.0, 2.0, 0.0, 45.0, 4.0, 0.0, 4.0, 20.0, 1.0], [1.0, 14.0, 0.0, 1.0, 65.0, 0.0, 1.0, 10.0, 2.0], [5.0, 0.0, 14.0, 4.0, 0.0, 62.0, 0.0, 0.0, 2.0], [0.0, 0.0, 0.0, 5.0, 1.0, 0.0, 57.0, 26.0, 2.0], [0.0, 0.0, 0.0, 1.0, 3.0, 0.0, 18.0, 61.0, 8.0], [0.0, 5.0, 0.0, 0.0, 5.0, 9.0, 7.0, 39.0, 25.0]]
+
+SVM (poly with degree 9 and coefficient 36, took a damn long time):
+Correct: 65.2709359606
+Incorrect: 34.7290640394
+[[81.0, 0.0, 3.0, 4.0, 0.0, 0.0, 0.0, 0.0, 0.0], [7.0, 70.0, 1.0, 0.0, 14.0, 0.0, 0.0, 2.0, 0.0], [7.0, 0.0, 69.0, 0.0, 0.0, 14.0, 0.0, 0.0, 0.0], [13.0, 2.0, 0.0, 43.0, 0.0, 1.0, 3.0, 21.0, 4.0], [0.0, 9.0, 0.0, 0.0, 70.0, 0.0, 1.0, 10.0, 4.0], [6.0, 1.0, 20.0, 1.0, 0.0, 51.0, 0.0, 0.0, 8.0], [0.0, 1.0, 0.0, 4.0, 0.0, 0.0, 56.0, 26.0, 4.0], [0.0, 0.0, 0.0, 0.0, 3.0, 0.0, 15.0, 50.0, 23.0], [0.0, 1.0, 1.0, 1.0, 5.0, 2.0, 8.0, 32.0, 40.0]]
+
+	topleft	topcenter	topright	centerleft	centercenter	centerright	bottomleft	bottomcenter	bottomright
+topleft	14	0	4	2	0	1	0	0	0
+topcenter	2	12	0	0	6	0	0	2	0
+topright	2	0	14	0	0	5	0	0	0
+centerleft	5	0	0	3	1	0	6	4	1
+centercenter	0	4	0	0	11	0	1	3	3
+centerright	1	0	6	1	1	10	1	0	0
+bottomleft	0	0	0	0	0	0	15	6	0
+bottomcenter	0	0	0	0	1	0	5	15	0
+bottomright	0	0	0	1	0	2	4	10	4
+
+KNN (Euclidean):
+Sucks! 11.4%
+
+SVM (one-one):
+
+
+ANN (x,y,a):
+backprop
+fnn = buildNetwork( trndata.indim, 5, trndata.outdim, outclass=SoftmaxLayer ) # try "hiddenclass=TanhLayer"
+trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+
+(THE BEST)
+epoch:   87   train error: 64.54%   test error: 65.50%
+Total error: 0.0396404123361
+epoch:   88   train error: 58.55%   test error: 62.00%
+Total error: 0.0389441504494
+epoch:   89   train error: 67.92%   test error: 63.00%
+Total error: 0.0392334708118
+epoch:   90   train error: 67.92%   test error: 72.50%
+Total error: 0.0396491304447
+epoch:   91   train error: 57.80%   test error: 61.50%
+Total error: 0.0392861931489
+epoch:   92   train error: 58.80%   test error: 61.50%
+Total error: 0.0390493198649
+epoch:   93   train error: 66.29%   test error: 73.50%
+Total error: 0.0408548626686
+epoch:   94   train error: 62.30%   test error: 63.00%
+Total error: 0.0405665053144
+epoch:   95   train error: 60.17%   test error: 58.50%
+Total error: 0.0402568974222
+epoch:   96   train error: 56.18%   test error: 61.50%
+Total error: 0.0402219127807
+epoch:   97   train error: 65.67%   test error: 73.00%
+Total error: 0.0401642656869
+epoch:   98   train error: 65.92%   test error: 65.00%
+Total error: 0.0395332547453
+epoch:   99   train error: 65.67%   test error: 61.00%
+Total error: 0.0395126368656
+epoch:  100   train error: 59.18%   test error: 60.50%
+
+for night (all data)
+fnn = buildNetwork( trndata.indim, 36, trndata.outdim, outclass=SoftmaxLayer ) # try "hiddenclass=TanhLayer"; Sigmoid is default
+trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+epoch:   40   train error: 61.92%   test error: 60.50%
+Total error: 0.0417078994861
+epoch:   41   train error: 67.04%   test error: 68.00%
+Total error: 0.04118136411
+epoch:   42   train error: 67.79%   test error: 65.00%
+Total error: 0.0410214757203
+epoch:   43   train error: 59.68%   test error: 59.50%
+Total error: 0.0409736965698
+epoch:   44   train error: 60.05%   test error: 57.50%
+Total error: 0.0412497591287
+epoch:   45   train error: 60.80%   test error: 60.00%
+Total error: 0.0412034919174
+epoch:   46   train error: 68.79%   test error: 69.00%
+Total error: 0.0413074787703
+epoch:   47   train error: 65.17%   test error: 63.00%
+Total error: 0.0408177682012
+epoch:   48   train error: 64.04%   test error: 65.00%
+Total error: 0.0407511765849
+epoch:   49   train error: 58.55%   test error: 60.50%
+Total error: 0.0405341339475
+epoch:   50   train error: 60.92%   test error: 61.50%
+
+for night (x, area)
+fnn = buildNetwork( trndata.indim, 36, trndata.outdim, outclass=SoftmaxLayer ) # try "hiddenclass=TanhLayer"; Sigmoid is default
+trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+epoch:   41   train error: 68.91%   test error: 66.00%
+Total error: 0.0425144394106
+epoch:   42   train error: 78.40%   test error: 79.00%
+Total error: 0.0429819704965
+epoch:   43   train error: 67.42%   test error: 66.50%
+Total error: 0.0422869439844
+epoch:   44   train error: 67.92%   test error: 70.00%
+Total error: 0.0423912824621
+epoch:   45   train error: 78.90%   test error: 76.50%
+Total error: 0.0421198704813
+epoch:   46   train error: 67.92%   test error: 69.00%
+Total error: 0.042367498976
+epoch:   47   train error: 67.29%   test error: 69.00%
+Total error: 0.0429968079158
+epoch:   48   train error: 64.92%   test error: 68.00%
+Total error: 0.0429450981183
+epoch:   49   train error: 69.29%   test error: 69.50%
+Total error: 0.0428145838371
+epoch:   50   train error: 64.92%   test error: 66.00%
+
+for night (y, area)
+epoch:   41   train error: 76.65%   test error: 83.50%
+Total error: 0.0474605746576
+epoch:   42   train error: 83.27%   test error: 86.00%
+Total error: 0.0474356799087
+epoch:   43   train error: 83.15%   test error: 87.00%
+Total error: 0.047306227417
+epoch:   44   train error: 77.78%   test error: 80.50%
+Total error: 0.0473389177233
+epoch:   45   train error: 80.90%   test error: 85.50%
+Total error: 0.0473366536755
+epoch:   46   train error: 79.78%   test error: 78.50%
+Total error: 0.0472244144902
+epoch:   47   train error: 83.15%   test error: 87.00%
+Total error: 0.047179412852
+epoch:   48   train error: 77.28%   test error: 83.00%
+Total error: 0.0472647927156
+epoch:   49   train error: 76.03%   test error: 83.50%
+Total error: 0.047040673059
+epoch:   50   train error: 83.15%   test error: 87.00%
+
+**********########THIS TELLS YOU THAT "Y" is not as important as X and AREA!!!!!!!!!!!!
+
+fnn = buildNetwork( trndata.indim, 36, trndata.outdim, outclass=SoftmaxLayer ) # try "hiddenclass=TanhLayer"; Sigmoid is default
+trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0)#0.01)
+Total error: 0.0364824433893
+Total error: 0.0363661165001
+Total error: 0.0365268043357
+Total error: 0.0368071997411
+Total error: 0.0362435134571
+Total error: 0.0365462098134
+Total error: 0.0367745574599
+Total error: 0.0364429160552
+
+fnn = buildNetwork( trndata.indim, 36, trndata.outdim, outclass=SoftmaxLayer ) # try "hiddenclass=TanhLayer"; Sigmoid is default
+trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+Total error: 0.0390515397771
+Total error: 0.0391927783403
+Total error: 0.038656373386
+Total error: 0.0391915057531
+Total error: 0.0386815902362
+Total error: 0.0386943764698
+Total error: 0.0387648626396
+Total error: 0.0392512424073
+Total error: 0.0390065168614
+
+SECOND BEST ==> hidden layer 36
+Total error: 0.0377020932458
+Total error: 0.0376411163928
+Total error: 0.0379842809192
+Total error: 0.037490982489
+Total error: 0.0377204713645
+Total error: 0.0380679755619
+Total error: 0.0378781135752
+
+THIRD BEST ==> for hidden layer 18
+Total error: 0.0378318897132
+Total error: 0.0378410121977
+Total error: 0.0381767560046
+
+===
+bias and outputbias True
+
+epoch:   41   train error: 59.93%   test error: 60.00%
+Total error: 0.0397536302187
+epoch:   42   train error: 59.68%   test error: 64.50%
+Total error: 0.0398738684811
+epoch:   43   train error: 69.66%   test error: 73.00%
+Total error: 0.0400433673785
+epoch:   44   train error: 63.67%   test error: 67.50%
+Total error: 0.0397040822493
+epoch:   45   train error: 63.55%   test error: 69.50%
+Total error: 0.0398463892176
+epoch:   46   train error: 61.92%   test error: 61.00%
+Total error: 0.0400078543776
+epoch:   47   train error: 59.93%   test error: 58.00%
+Total error: 0.0399424142784
+epoch:   48   train error: 62.80%   test error: 69.00%
+Total error: 0.0397453807217
+epoch:   49   train error: 60.55%   test error: 67.00%
+Total error: 0.039689495148
+epoch:   50   train error: 63.67%   test error: 67.50%
+====
+just outputbias True
+
+epoch:   41   train error: 61.42%   test error: 70.50%
+Total error: 0.0394641855901
+epoch:   42   train error: 65.67%   test error: 76.50%
+Total error: 0.0395278743569
+epoch:   43   train error: 59.30%   test error: 66.50%
+Total error: 0.0395974063616
+epoch:   44   train error: 58.05%   test error: 68.50%
+Total error: 0.0392214823111
+epoch:   45   train error: 59.30%   test error: 71.00%
+Total error: 0.0394919952679
+epoch:   46   train error: 60.92%   test error: 61.50%
+Total error: 0.0393538187136
+epoch:   47   train error: 57.93%   test error: 65.50%
+Total error: 0.0426633119375
+epoch:   48   train error: 60.80%   test error: 71.50%
+Total error: 0.042575027806
+epoch:   49   train error: 66.17%   test error: 74.50%
+Total error: 0.0414791233
+epoch:   50   train error: 59.43%   test error: 65.50%
+====
+just bias True
+
+epoch:   40   train error: 56.68%   test error: 68.50%
+Total error: 0.0392295019341
+epoch:   41   train error: 58.05%   test error: 69.50%
+Total error: 0.0389756033578
+epoch:   42   train error: 58.18%   test error: 69.50%
+Total error: 0.0389404402538
+epoch:   43   train error: 56.80%   test error: 62.00%
+Total error: 0.03909446227
+epoch:   44   train error: 57.43%   test error: 66.00%
+Total error: 0.0390995578318
+epoch:   45   train error: 68.66%   test error: 79.00%
+Total error: 0.0390602362058
+epoch:   46   train error: 55.06%   test error: 66.00%
+Total error: 0.0389284667537
+epoch:   47   train error: 59.55%   test error: 65.50%
+Total error: 0.0392062984073
+epoch:   48   train error: 57.30%   test error: 68.50%
+Total error: 0.040912436303
+epoch:   49   train error: 65.92%   test error: 73.50%
+Total error: 0.0426612208098
+epoch:   50   train error: 68.04%   test error: 76.50%
+====
+
+WHOLE IMAGE ARRAY in BINARY (0,255)
+img.colorDistance(Color.WHITE).binarize(BINARY_THRESHOLD).morphOpen()
+fnn = buildNetwork( trndata.indim, 36, trndata.outdim, outclass=SoftmaxLayer ) # try "hiddenclass=TanhLayer"; Sigmoid is default
+trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+
+Total error: 0.0499986825181
+epoch:   51   train error: 88.76%   test error: 89.00%
+Total error: 0.0500100925855
+epoch:   52   train error: 88.76%   test error: 87.00%
+Total error: 0.0500502520997
+epoch:   53   train error: 87.64%   test error: 91.50%
+Total error: 0.0500489251895
+epoch:   54   train error: 89.01%   test error: 88.50%
+Total error: 0.0499444881302
+epoch:   55   train error: 87.64%   test error: 91.50%
+Total error: 0.0500401264254
+epoch:   56   train error: 89.14%   test error: 87.50%
+Total error: 0.0500332744941
+epoch:   57   train error: 89.01%   test error: 88.50%
+Total error: 0.0497754986604
+epoch:   58   train error: 88.89%   test error: 89.00%
+Total error: 0.0500367164218
+epoch:   59   train error: 88.76%   test error: 87.00%
+Total error: 0.0501074034234
+epoch:   60   train error: 87.64%   test error: 91.50%
+
+REAL BINARY (0,1) - for "./images100/train/"
+fnn = buildNetwork( trndata.indim, 36, trndata.outdim, outclass=SoftmaxLayer ) # try "hiddenclass=TanhLayer"; Sigmoid is default
+trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+
+Total error: 0.0191717077344
+epoch:   50   train error: 18.23%   test error: 24.00%
+Total error: 0.0191500219733
+epoch:   51   train error: 26.47%   test error: 34.00%
+Total error: 0.0190518358105
+epoch:   52   train error: 17.73%   test error: 22.00%
+Total error: 0.0193135455216
+epoch:   53   train error: 18.48%   test error: 25.00%
+Total error: 0.0189168630232
+epoch:   54   train error: 16.35%   test error: 23.00%
+Total error: 0.0193577812841
+epoch:   55   train error: 19.48%   test error: 22.50%
+Total error: 0.0192439989735
+epoch:   56   train error: 20.47%   test error: 28.50%
+Total error: 0.0191414321683
+epoch:   57   train error: 14.98%   test error: 21.00%
+Total error: 0.0187540092209
+epoch:   58   train error: 18.85%   test error: 22.00%
+Total error: 0.0188688825046
+epoch:   59   train error: 23.47%   test error: 30.50%
+Total error: 0.0189821347489
+epoch:   60   train error: 17.10%   test error: 23.00%
+
+for "./images/night_images_200/train/"
+Total error: 0.0204547456732
+epoch:   51   train error: 18.38%   test error: 39.39%
+Total error: 0.0205010151841
+epoch:   52   train error: 19.85%   test error: 36.36%
+Total error: 0.0200470213806
+epoch:   53   train error: 20.59%   test error: 39.39%
+Total error: 0.0196204539086
+epoch:   54   train error: 15.44%   test error: 45.45%
+Total error: 0.0193798067687
+epoch:   55   train error: 16.18%   test error: 39.39%
+Total error: 0.0191310344573
+epoch:   56   train error: 21.32%   test error: 45.45%
+Total error: 0.0193562283935
+epoch:   57   train error: 19.12%   test error: 39.39%
+Total error: 0.0187173889637
+epoch:   58   train error: 17.65%   test error: 33.33%
+Total error: 0.0188848921581
+epoch:   59   train error: 21.32%   test error: 45.45%
+Total error: 0.0185557011146
+epoch:   60   train error: 13.97%   test error: 36.36%
+
+for  "./images80/train/"
+last train error is about "27.xx%"
+
+got this in trainUntilConvergence()
+Total error: 0.0174804239009
+Total error: 0.017810569145
+Total error: 0.0178744628601
+Total error: 0.0171848230878
+
+
+ANN:
+test_this1.pkl ==> yields good results for "images100" and "images80", but get like "25%" for "night_images_200"; 
+1.99_500_40_9 ==> yields good results "80.4%" for "./images80/" and "./images100" and about "37.5%" for "night_images_200", and "18.3%" for "day_images_1000"
+
+Thoughts
+========
+
+Might not be useful for Real Time tracking since I will pool from 5 most recent frames.
+But if the user spends more time at each location, this can be effective
+
+- screen size dependent (due to training requirement)
+- training takes a long time
+- lighting dependent (day_images vs. night_images).  Day Image sample has shadow
+- somewhat suspectible to distance from screen
+
+Image to Video Encoding
+========================
+ffmpeg -r 10 -b 64k -i %d.jpeg test.avi
+

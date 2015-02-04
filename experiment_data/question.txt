@@ -1,0 +1,53 @@
+Hello,
+
+I've been trying to save the output of my eye tracking program into a video.  I run the example here: <https://github.com/ingenuitas/SimpleCV/blob/master/SimpleCV/examples/display/videowriter.py> (modified line 10 as this: "c.getImage().save(vs)") and that produces the video with green stripes as captured here: <http://imgur.com/OtggW>.
+
+I'm using SimpleCV from github with Ubuntu 11.10. The first couple of lines of stdout SimpleCV gives me when I run that program are:
+
+>>Output #0, avi, to 'foo.avi':
+    Stream #0.0: Video: rawvideo, bgr24, 640x480, q=2-31, 19660 kb/s, 90k tbn, 25 tbc
+
+When I do:
+
+SimpleCV:1> c=Camera()
+SimpleCV:2> c.getAllProperties()
+HIGHGUI ERROR: V4L2: Unable to get property Exposure(9963793) - Invalid argument
+HIGHGUI ERROR: V4L: Exposure control in V4L is not supported
+HIGHGUI ERROR: V4L2: Unable to get property Hue(9963779) - Invalid argument
+SimpleCV:2: 
+{'brightness': 0.501960813999176,
+ 'contrast': 0.125490203499794,
+ 'exposure': -1.0,
+ 'gain': 0.250980406999588,
+ 'height': 480.0,
+ 'hue': 0.0,
+ 'saturation': 0.125490203499794,
+ 'width': 640.0}
+
+Are they related?  I have read <http://help.simplecv.org/question/184/highgui-error-while-trying-to-set-properties-of> and installed Cheese, which is running fine.  I can also "show()" the output of the camera in SimpleCV shell by doing, "c=Camera(); c.getImage().show()", which outputs the image in good color.
+
+Thank you for your help.
+
+=====
+Hello,
+
+I've been trying to detect/extract the centroid of the iris from a video stream like this: <http://imgur.com/UI3dX> (sorry about the image size, but that's literally what I have to deal with).  I tried kscottz's approach here <http://stackoverflow.com/questions/8145725/track-eye-pupil-in-a-video>, but that requires me to know the threshold, which is dependent on surrounding lighting and other factors.  The example of the approach I tried is show below:
+<pre>
+<code>
+import pygame
+
+i=Image("0.jpeg")
+
+d=Display((200,200), pygame.RESIZABLE)
+
+bm=BlobMaker()
+
+bs = bm.extractFromBinary(i.invert().binarize(thresh=150).invert(),i)
+
+bs[0].draw()
+
+i.save(d)
+</code>
+</pre>
+
+

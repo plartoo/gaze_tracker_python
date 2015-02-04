@@ -1,0 +1,14 @@
+An gaze tracker based on an OpenCV implemention of Python called SimpleCV [http://simplecv.org/].
+
+The code was written in the spring of 2012(?) for an independent project in a computer vision class.
+It connects to the webcam of the user; allows user to train the neural network by gazing at different (8 total) quadrants of the screen; and then began tracking the gaze in those 8 quadrants.
+
+Requires a few Python libraries such as PyBrain [http://pybrain.org/] for Neural Net models and SimpleCV [http://simplecv.org/] as described above.
+
+For more information on how it works, please read the PDF included, name "writeup".
+
+
+p.s. Apology that I couldn't provide detailed instruction on how to run this code exactly (wrote it quite a while ago), but it should go something like this:
+1. install all dependencies.
+2. run "train.py" and follow the highlighted boxes on the computer screen (make sure to place your webcam and head at the center of the monitor before running it)
+3. when #2 ends, run "gaze.py" and it'll start tracking (hopefully)
